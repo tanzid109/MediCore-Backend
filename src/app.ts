@@ -7,7 +7,6 @@ import config from "./config";
 import { globalErrorHandler } from "./middleware/globalErrorHandler";
 import { notFound } from "./middleware/notFound";
 
-
 const app: Application = express();
 
 app.use(
