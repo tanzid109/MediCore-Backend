@@ -1,6 +1,10 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, { Application, Request, Response } from "express";
+import express, {
+	type Application,
+	type Request,
+	type Response,
+} from "express";
 import httpStatus from "http-status";
 import { AuthRoutes } from "./module/auth/auth.route";
 import config from "./config";
@@ -10,10 +14,10 @@ import { notFound } from "./middleware/notFound";
 const app: Application = express();
 
 app.use(
-  cors({
-    origin: config.frontend_url,
-    credentials: true,
-  }),
+	cors({
+		origin: config.frontend_url,
+		credentials: true,
+	}),
 );
 
 // Enable URL-encoded form data parsing
@@ -27,10 +31,10 @@ app.use("/api/v1/auth", AuthRoutes);
 
 // Basic route
 app.get("/", async (req: Request, res: Response) => {
-  res.status(httpStatus.OK).json({
-    success: true,
-    message: "Welcome to Medicore Health Care System Backend",
-  });
+	res.status(httpStatus.OK).json({
+		success: true,
+		message: "Welcome to Medicore Health Care System Backend",
+	});
 });
 
 app.use(globalErrorHandler);
