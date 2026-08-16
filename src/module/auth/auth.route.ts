@@ -8,40 +8,30 @@ import { validateRequest } from "../../middleware/validateRequest";
 const router = Router();
 
 router.post(
-	"/register",
-	//   (req: Request, res: Response, next: NextFunction) => {
-	//     try {
-	//       const payload = req.body ?? {};
-	//       const result =
-	//         PatientValidation.PatientRegistrationSchema.safeParse(payload);
-
-	//       if (!result.success) {
-	//         console.log(result.error);
-	//         console.log(result.error.issues);
-	//         throw new Error(result.error.message);
-	//       }
-
-	//       req.body = result.data;
-
-	//       next();
-	//     } catch (error) {
-	//       next(error);
-	//     }
-	//   },
-
-	validateRequest(UserValidation.PatientRegistrationSchema),
-	AuthController.registerPatient,
+  "/register",
+  validateRequest(UserValidation.PatientRegistrationSchema),
+  AuthController.registerPatient,
 );
 router.post(
-	"/login",
-	validateRequest(UserValidation.loginSchema),
-	AuthController.loginUser,
+  "/login",
+  validateRequest(UserValidation.loginSchema),
+  AuthController.loginUser,
 );
 router.get(
-	"/me",
-	auth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
-	AuthController.getMe,
+  "/me",
+  auth(Role.ADMIN, Role.DOCTOR, Role.PATIENT, Role.SUPER_ADMIN),
+  AuthController.getMe,
 );
 router.post("/refresh-token", AuthController.refreshToken);
+router.post(
+  "/forgot-password",
+  validateRequest(UserValidation.ForgotPasswordZodSchema),
+  AuthController.forgotPassword,
+);
+router.post(
+  "/reset-password",
+  validateRequest(UserValidation.ResetPasswordZodSchema),
+  AuthController.resetPassword,
+);
 router.post("/google", AuthController.googleLogin);
 export const AuthRoutes = router;
