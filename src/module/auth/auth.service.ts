@@ -20,6 +20,9 @@ import type {
 } from "./auth.interface";
 import crypto from "crypto";
 import { redisClient } from "../../lib/redis";
+import { transporter } from "../../lib/nodemailer";
+import ejs, { name } from "ejs";
+import path from "path";
 
 const registerPatient = async (payload: IRegisterPatientPayload) => {
   const { name, password, patient: patientData } = payload;
@@ -369,7 +372,28 @@ const forgotPassword = async (payload: IForgotPasswordPayload) => {
       value: 5 * 60,
     },
   });
+
+  const templatePath = path.join(
+    process.cwd(),
+    "src/templates/forgot-password.ejs",
+  );
+
+  const exprirationSeconds = 5 * 60;
+
+  const html = await ejs.renderFile(templatePath, {
+    name: isUserExists.name,
+    otp,
+    expirationMinutes: exprirationSeconds / 60,
+  });
+
+  await transporter.sendMail({
+    from: config.email_sender,
+    to: isUserExists.email,
+    subject: "Forgot Password",
+    html,
+  });
 };
+
 const resetPassword = async (payload: IResetPasswordPayload) => {
   const { email, otp, newPassword } = payload;
 
@@ -409,7 +433,7 @@ const resetPassword = async (payload: IResetPasswordPayload) => {
     Number(config.bcrypt_salt_rounds),
   );
 
-  const updatedUser = prisma.user.update({
+  await prisma.user.update({
     where: {
       email: isUserExists.email,
     },
@@ -418,7 +442,23 @@ const resetPassword = async (payload: IResetPasswordPayload) => {
     },
   });
 
-  await redisClient.del(redisOtp);
+  await redisClient.del(key);
+
+  const templatePath = path.join(
+    process.cwd(),
+    "src/templates/reset-password-success.ejs",
+  );
+
+  const html = await ejs.renderFile(templatePath, {
+    name: isUserExists.name,
+  });
+
+  await transporter.sendMail({
+    from: config.email_sender,
+    to: isUserExists.email,
+    subject: "Password Changed",
+    html,
+  });
 };
 
 export const AuthService = {

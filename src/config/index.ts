@@ -4,7 +4,7 @@ import path from "path";
 dotenv.config({ path: path.join(process.cwd(), ".env") });
 
 export default {
-  node_env: process.env.NODE_ENV,
+  node_env: process.env.NODE_ENV ?? "development",
   port: process.env.PORT,
   database_url: process.env.DATABASE_URL,
   bak_url: process.env.APP_URL,
@@ -28,4 +28,7 @@ export default {
   redis_password: process.env.REDIS_PASSWORD!,
   redis_host: process.env.REDIS_HOST!,
   redis_port: process.env.REDIS_PORT!,
+  smtp_user: process.env.SMTP_USER!,
+  email_sender: process.env.EMAIL_SENDER!,
+  smtp_password: process.env.SMTP_PASSWORD!,
 };

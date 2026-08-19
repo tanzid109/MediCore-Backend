@@ -31,11 +31,6 @@ const loginSchema = z.object({
       /[^A-Za-z0-9]/,
       "Password must contain at least one special character",
     ),
-  patient: z
-    .object({
-      contactNumber: z.string().optional(),
-    })
-    .optional(),
 });
 
 const ForgotPasswordZodSchema = z.object({
